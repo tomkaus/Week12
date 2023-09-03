@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Week 12 Assignment</title>
+    <!-- Bootstrap CDN -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <!-- Sticky banner menu bar -->
+  <div id="sticky-banner">
+    <ul>
+      <li>Army</li>
+      <li>Navy</li>
+      <li>Air Force</li>
+      <li>Marine Corps</li>
+      <li>Space Force</li>
+      <li>Coast Guard</li>
+    </ul>
+  </div>
+
+  <body class="backgroundColor">
+    <div class="container">
+      <div class="form-container shadow">
+        <form>
+          <h4>Add New Veteran Form</h4>
+          <div>
+            <label for="fullName">Full Name</label>
+            <input id="fullName" placeholder="Last, First" />
+          </div>
+          <div>
+            <label for="newBranch">Branch</label>
+            <input id="newBranch" placeholder="Service" />
+          </div>
+          <button class="btn btn-primary mt-2" id="submitVet">Submit</button>
+        </form>
+
+        <form>
+          <h4>Update Vet Form</h4>
+          <div>
+            <label for="updateId">ID</label>
+            <input id="updateId" />
+          </div>
+          <div>
+            <label for="updateName">Vet Name</label>
+            <input id="updateName" />
+          </div>
+          <div>
+            <label for="updateBranch">Branch</label>
+            <input id="updateBranch" />
+          </div>
+          <button class="btn btn-secondary mt-2" id="updateVet">Update</button>
+        </form>
+      </div>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Vet Name</th>
+              <th>Branch</th>
+              <th>Delete Vet</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ALL OF YOUR JQUERY/BOOTSTRAP/SCRIPT SETUP ARE BELOW HERE. 
+  WE USE CDN'S (content delivery network) INSTEAD OF NODE_MODULES -->
+
+    <!-- Jquery CDN  -->
+    <script
+      src="https://code.jquery.com/jquery-3.6.3.min.js"
+      integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU="
+      crossorigin="anonymous"
+    ></script>
+    <!-- Popper CDN: For dropdowns, popovers, tooltips, etc-->
+    <script
+      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+      integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3"
+      crossorigin="anonymous"
+    ></script>
+    <!-- Bootstrap Script CDN -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+      crossorigin="anonymous"
+    ></script>
+    <!-- Your JavaScript Code -->
+    <script>
+      const URL_ENDPOINT = "http://localhost:3000/vetRoster";
+
+      $.get(URL_ENDPOINT).then((data) => {
+        data.map((vet) => {
+          $("tbody").append(
+            $(`
+          <tr>
+            <td>${vet.id}</td>
+            <td>${vet.fullName}</td>
+            <td>${vet.branch}</td>
+            <td>
+              <button onclick="deleteUser(${vet.id})">🗑</button>
+            </td>
+          </tr>
+          `)
+          );
+        });
+      });
+
+      $("#submitVet").click(function () {
+        $.post(URL_ENDPOINT, {
+          fullName: $("#fullName").val(),
+          branch: $("#newBranch").val(),
+        });
+      });
+
+      function deleteUser(id) {
+        $.ajax(`${URL_ENDPOINT}/${id}`, {
+          type: "DELETE",
+        });
+      }
+
+      function updateUser() {
+        let id = $("#updateId").val();
+
+        $.ajax(`${URL_ENDPOINT}/${id}`, {
+          method: "PUT",
+          data: {
+            fullName: $("#updateName").val(),
+            branch: $("#updateBranch").val(),
+          },
+        });
+      }
+
+      $("#updateVet").click(updateUser);
+    </script>
+    <script src="./index.js"></script>
+  </body>
+</html>
